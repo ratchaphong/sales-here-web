@@ -1,0 +1,134 @@
+/* 🌈 CSS Variables (Muji / Earth tone) */
+:root {
+  --color-primary: #a58c7e;
+  --color-primary-hover: #856e63;
+  --color-secondary: #e5e5e5;
+  --color-secondary-hover: #cccccc;
+  --color-muted: #f5f5f5;
+  --color-text: #2d2d2d;
+  --color-border: #d4d4d4;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 🔤 Thai font + base color */
+body {
+  font-family: 'Prompt', sans-serif;
+  background-color: var(--color-muted);
+  color: var(--color-text);
+}
+
+/* 🧾 Input, Select, Textarea */
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 0.75rem 1.25rem; /* px-5 py-3 */
+  border-radius: 0.75rem; /* rounded-xl */
+  border: 1px solid var(--color-border);
+  background-color: white;
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: 1rem;
+  transition: all 0.15s ease-in-out;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-primary); /* ring-2 */
+}
+
+input:hover,
+select:hover,
+textarea:hover {
+  box-shadow: 0 0 0 1px var(--color-primary); /* ring-1 */
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9ca3af; /* text-gray-400 */
+}
+
+/* 🖱️ ปุ่มพื้นฐาน */
+button {
+  font-weight: 600;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.75rem;
+  transition: all 0.15s ease-in-out;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  font-family: inherit;
+}
+
+button:hover {
+  background-color: var(--color-primary-hover);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 🔗 ลิงก์ทั่วไป */
+a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  font-weight: 500;
+  transition: color 0.15s ease-in-out;
+}
+
+a:hover {
+  color: var(--color-primary-hover);
+}
+
+/* 🔗 ลิงก์ที่อยู่ในปุ่ม (ถ้ามี) */
+a.button-link {
+  display: inline-block;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.75rem;
+  background-color: var(--color-secondary);
+  color: var(--color-text);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.15s ease-in-out;
+}
+
+a.button-link:hover {
+  background-color: var(--color-secondary-hover);
+}
+
+/* 🟤 ปุ่มหลัก */
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+}
+
+/* ⚪ ปุ่มรอง */
+.btn-secondary {
+  background-color: var(--color-secondary);
+  color: var(--color-text);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-secondary-hover);
+}
