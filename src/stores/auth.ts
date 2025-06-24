@@ -12,12 +12,26 @@ export interface RegisterPayload {
   password: string
 }
 
+export interface UserProfile {
+  id: string
+  name: string
+  email: string
+  createdAt: string
+  updatedAt: string
+  avatar: string
+  phoneNumber: string
+  address: string
+  deletedAt: string | null
+  isDeleted: boolean
+  role: 'USER' | 'ADMIN' | 'STAFF'
+}
+
 const API_BASE = 'https://user-m-service.onrender.com/users'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    loginTime: null as string | null,
     loading: false,
+    profile: null as UserProfile | null,
   }),
   actions: {
     async login(payload: LoginPayload) {
@@ -26,11 +40,9 @@ export const useAuthStore = defineStore('auth', {
         const res = await axios.post(`${API_BASE}/login`, payload)
         const token = res.data.access_token
 
-        this.loginTime = new Date().toISOString()
-
         localStorage.setItem('access_token', token)
         localStorage.setItem('username', payload.email)
-        localStorage.setItem('loginTime', this.loginTime)
+        localStorage.setItem('loginTime', new Date().toISOString())
       } catch (err) {
         console.error('❌ Login failed:', err)
         throw err
@@ -48,10 +60,37 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
+    async fetchProfile() {
+      const token = getAccessToken()
+      if (!token) return
+      await axios.get('/profile', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      try {
+        const res = await axios.get<UserProfile>(`${API_BASE}/profile`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        this.profile = res.data
+      } catch (err) {
+        console.error('❌ Failed to fetch profile:', err)
+        throw err
+      }
+    },
+
     logout() {
-      this.loginTime = null
+      this.profile = null
       localStorage.removeItem('access_token')
       localStorage.removeItem('loginTime')
     },
   },
 })
+
+export function getAccessToken(): string | null {
+  if (typeof window === 'undefined') return null
+  return localStorage.getItem('access_token')
+}

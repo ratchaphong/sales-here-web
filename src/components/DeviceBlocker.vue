@@ -7,6 +7,25 @@
   </div>
 </template>
 
+<script setup type="ts">
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+
+const isSmallScreen = ref(false)
+
+const checkScreen = () => {
+  isSmallScreen.value = window.innerWidth < 1024
+}
+
+onMounted(() => {
+  checkScreen()
+  window.addEventListener('resize', checkScreen)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', checkScreen)
+})
+</script>
+
 <style scoped>
 .device-blocker {
   position: fixed;
@@ -34,22 +53,3 @@
   }
 }
 </style>
-
-<script setup type="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue'
-
-const isSmallScreen = ref(false)
-
-const checkScreen = () => {
-  isSmallScreen.value = window.innerWidth < 1024
-}
-
-onMounted(() => {
-  checkScreen()
-  window.addEventListener('resize', checkScreen)
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', checkScreen)
-})
-</script>

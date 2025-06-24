@@ -2,7 +2,7 @@
   <div class="home-page">
     <Navbar />
 
-    <div class="product-scroll">
+    <div id="product-scroll" class="product-scroll">
       <div
         v-for="product in productStore.products"
         :key="product.id"
@@ -19,21 +19,26 @@
     <button class="floating-button" @click="toggleSearch">🔍</button>
     <BottomSearchBar
       v-model="showSearch"
-      @update:search="(val) => (searchText = val)"
-      @update:sort="(val) => (sortBy = val)"
+      :search-text="searchText"
+      :sort-mode="sortBy"
+      @update:search-text="(val) => (searchText = val)"
+      @update:sort-mode="(val) => (sortBy = val)"
+      @search="handleSearch"
     />
     <LoadingOverlay v-if="productStore.loading" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useProductStore, type ProductQuery } from '@/stores/product'
+import { useAuthStore } from '@/stores/auth'
 import Navbar from '@/components/Navbar.vue'
 import LoadingOverlay from '@/components/LoadingOverlay.vue'
 import BottomSearchBar from './BottomSearchBar.vue'
 
 const productStore = useProductStore()
+const auth = useAuthStore()
 const searchText = ref('')
 const sortBy = ref('')
 const showSearch = ref(false)
@@ -44,29 +49,36 @@ const query: ProductQuery = {
 
 const toggleSearch = () => {
   showSearch.value = !showSearch.value
+  searchText.value = ''
+  sortBy.value = ''
 }
 
-const filteredProducts = computed(() => {
-  let products = [...productStore.products]
+const handleSearch = async () => {
+  query.sortMode = sortBy.value || 'fifo'
 
-  if (searchText.value.trim()) {
-    products = products.filter((p) => p.name.toLowerCase().includes(searchText.value.toLowerCase()))
+  try {
+    await productStore.fetchProducts(query)
+    const scrollTarget = document.getElementById('product-scroll')
+    scrollTarget?.scrollIntoView({ behavior: 'smooth' })
+  } catch (err) {
+    console.warn('⚠️ ไม่สามารถโหลดข้อมูลผู้ใช้ได้:', err)
+  } finally {
+    toggleSearch()
+  }
+}
+
+onMounted(async () => {
+  if (!auth.profile) {
+    try {
+      await auth.fetchProfile()
+    } catch (err) {
+      console.warn('⚠️ ไม่สามารถโหลดข้อมูลผู้ใช้ได้:', err)
+      // หากจำเป็นอาจ redirect ไป login ได้ที่นี่
+    }
   }
 
-  if (sortBy.value === 'price_asc') {
-    products.sort((a, b) => a.price - b.price)
-  } else if (sortBy.value === 'price_desc') {
-    products.sort((a, b) => b.price - a.price)
-  } else if (sortBy.value === 'name') {
-    products.sort((a, b) => a.name.localeCompare(b.name))
-  }
-
-  return products
-})
-
-onMounted(() => {
   if (productStore.products.length === 0) {
-    productStore.fetchProducts(query)
+    await productStore.fetchProducts(query)
   }
 })
 </script>
@@ -99,7 +111,8 @@ onMounted(() => {
   background: rgba(0, 0, 0, 0.4);
   padding: 1rem;
   border-radius: 0.75rem;
-  max-width: 400px;
+  /* max-width: 400px; */
+  width: 40%;
 }
 
 .price {

@@ -9,12 +9,19 @@
         <input
           v-if="!isLogin"
           v-model="name"
+          name="name"
           type="text"
           placeholder="ชื่อผู้ใช้งาน"
           class="form-input"
         />
-        <input v-model="email" type="email" placeholder="อีเมล" class="form-input" />
-        <input v-model="password" type="password" placeholder="รหัสผ่าน" class="form-input" />
+        <input v-model="email" name="email" type="email" placeholder="อีเมล" class="form-input" />
+        <input
+          v-model="password"
+          name="password"
+          type="password"
+          placeholder="รหัสผ่าน"
+          class="form-input"
+        />
         <button @click="handleSubmit" class="btn btn-primary">
           {{ isLogin ? 'เข้าสู่ระบบ' : 'สมัครสมาชิก' }}
         </button>
@@ -59,7 +66,7 @@ const handleSubmit = async () => {
           email: email.value,
           password: password.value,
         })
-        router.push('/profile')
+        router.push('/home')
       } catch (e) {
         alert('เข้าสู่ระบบไม่สำเร็จ')
       }
