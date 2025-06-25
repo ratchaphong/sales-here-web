@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
+import { fetchProducts as fetchProductsService } from '@/services/product'
 
 export interface Product {
   id: string
@@ -20,22 +20,17 @@ export interface ProductQuery {
   limit: number
 }
 
-const API_BASE = 'https://pd-m-service.onrender.com/products'
-
 export const useProductStore = defineStore('product', {
   state: () => ({
     loading: false,
     products: [] as Product[],
   }),
-
   actions: {
     async fetchProducts(query: ProductQuery) {
       this.loading = true
       try {
-        const res = await axios.get<Product[]>(API_BASE + '/public', {
-          params: query,
-        })
-        this.products = res.data
+        const products = await fetchProductsService(query)
+        this.products = products
       } catch (err) {
         console.error('❌ Failed to fetch products:', err)
       } finally {

@@ -69,7 +69,7 @@
 import { reactive, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import Navbar from '@/components/Navbar.vue'
-import { useProtectPage } from '@/composables/useProtectPage'
+import { useProtectPage } from '@/utils/useProtectPage'
 import LoadingOverlay from '@/components/LoadingOverlay.vue'
 
 const defaultAvatar = 'https://cdn-icons-png.flaticon.com/512/149/149071.png'

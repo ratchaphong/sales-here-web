@@ -1,7 +1,8 @@
 // composables/useProtectPage.ts
 import { onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { getAccessToken, useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores/auth'
+import { getAccessToken } from '@/utils/token'
 
 export function useProtectPage() {
   const auth = useAuthStore()

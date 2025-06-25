@@ -5,7 +5,7 @@
 
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import { useSessionCheck } from './router/useSessionCheck'
+import { useSessionCheck } from './utils/useSessionCheck'
 import DeviceBlocker from './components/DeviceBlocker.vue'
 
 useSessionCheck()

@@ -1,5 +1,11 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
+import { getAccessToken, removeAccessToken, setAccessToken } from '@/utils/token'
+import {
+  login as loginService,
+  register as registerService,
+  fetchProfile as fetchProfileService,
+  updateProfile as updateProfileService,
+} from '@/services/user'
 
 export interface LoginPayload {
   email: string
@@ -33,8 +39,6 @@ export interface UpdateProfilePayload {
   avatar?: string
 }
 
-const API_BASE = 'https://user-m-service.onrender.com/users'
-
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     loading: false,
@@ -44,12 +48,8 @@ export const useAuthStore = defineStore('auth', {
     async login(payload: LoginPayload) {
       this.loading = true
       try {
-        const res = await axios.post(`${API_BASE}/login`, payload)
-        const token = res.data.access_token
-
-        localStorage.setItem('access_token', token)
-        localStorage.setItem('username', payload.email)
-        localStorage.setItem('loginTime', new Date().toISOString())
+        const token = await loginService(payload)
+        setAccessToken(token)
       } catch (err) {
         console.error('❌ Login failed:', err)
         throw err
@@ -61,7 +61,7 @@ export const useAuthStore = defineStore('auth', {
     async register(payload: RegisterPayload) {
       this.loading = true
       try {
-        await axios.post(`${API_BASE}/register`, payload)
+        await registerService(payload)
       } finally {
         this.loading = false
       }
@@ -72,12 +72,10 @@ export const useAuthStore = defineStore('auth', {
       if (!token) return
       this.loading = true
       try {
-        const res = await axios.get<UserProfile>(`${API_BASE}/profile`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        this.profile = res.data
+        const token = getAccessToken()
+        if (!token) throw new Error('No token')
+        const user = await fetchProfileService()
+        this.profile = user
       } catch (err) {
         console.error('❌ Failed to fetch profile:', err)
         throw err
@@ -91,13 +89,8 @@ export const useAuthStore = defineStore('auth', {
       if (!token) return
       this.loading = true
       try {
-        const res = await axios.patch(`${API_BASE}/profile`, payload, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-
-        this.profile = res.data
+        const updated = await updateProfileService(payload)
+        this.profile = updated
         return true
       } catch (err) {
         console.error('❌ Failed to update profile:', err)
@@ -109,13 +102,7 @@ export const useAuthStore = defineStore('auth', {
 
     logout() {
       this.profile = null
-      localStorage.removeItem('access_token')
-      localStorage.removeItem('loginTime')
+      removeAccessToken()
     },
   },
 })
-
-export function getAccessToken(): string | null {
-  if (typeof window === 'undefined') return null
-  return localStorage.getItem('access_token')
-}

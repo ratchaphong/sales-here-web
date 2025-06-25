@@ -2,8 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/home/HomeView.vue'
 import LoginView from '../views/login/LoginView.vue'
 import ProfileView from '../views/profile/ProfileView.vue'
-import { useAuthStore, getAccessToken } from '@/stores/auth'
+import { useAuthStore } from '@/stores/auth'
 import SSOView from '@/views/sso/SSOView.vue'
+import { getAccessToken } from '@/utils/token'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

@@ -1,4 +1,5 @@
-import { getAccessToken, useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores/auth'
+import { getAccessToken } from '@/utils/token'
 
 export async function useSessionCheck() {
   if (typeof window === 'undefined') return
