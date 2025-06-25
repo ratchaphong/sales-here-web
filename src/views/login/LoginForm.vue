@@ -8,15 +8,21 @@
       <div class="form">
         <input
           v-if="!isLogin"
-          v-model="name"
+          v-model="form.name"
           name="name"
           type="text"
           placeholder="ชื่อผู้ใช้งาน"
           class="form-input"
         />
-        <input v-model="email" name="email" type="email" placeholder="อีเมล" class="form-input" />
         <input
-          v-model="password"
+          v-model="form.email"
+          name="email"
+          type="email"
+          placeholder="อีเมล"
+          class="form-input"
+        />
+        <input
+          v-model="form.password"
           name="password"
           type="password"
           placeholder="รหัสผ่าน"
@@ -38,33 +44,37 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import SalesHereLogo from '@/components/SalesHereLogo.vue'
 import LoadingOverlay from '@/components/LoadingOverlay.vue'
 
 const isLogin = ref(true)
-const name = ref('')
-const email = ref('')
-const password = ref('')
+
+const form = reactive({
+  name: '',
+  email: '',
+  password: '',
+})
+
 const router = useRouter()
 const auth = useAuthStore()
 
 const toggleMode = () => {
   isLogin.value = !isLogin.value
-  name.value = ''
-  email.value = ''
-  password.value = ''
+  form.name = ''
+  form.email = ''
+  form.password = ''
 }
 
 const handleSubmit = async () => {
   if (isLogin.value) {
-    if (email.value.trim() && password.value.trim()) {
+    if (form.email.trim() && form.password.trim()) {
       try {
         await auth.login({
-          email: email.value,
-          password: password.value,
+          email: form.email,
+          password: form.password,
         })
         router.push('/home')
       } catch (e) {
@@ -72,19 +82,19 @@ const handleSubmit = async () => {
       }
     }
   } else {
-    if (name.value.trim() && email.value.trim() && password.value.trim()) {
+    if (form.name.trim() && form.email.trim() && form.password.trim()) {
       try {
         await auth.register({
-          name: name.value,
-          email: email.value,
-          password: password.value,
+          name: form.name,
+          email: form.email,
+          password: form.password,
         })
+
         // ✅ หลังสมัครสมาชิกเสร็จ: กลับไปที่ฟอร์ม Login + เคลียร์ค่า
         isLogin.value = true
-        name.value = ''
-        email.value = ''
-        password.value = ''
-
+        form.name = ''
+        form.email = ''
+        form.password = ''
         alert('สมัครสมาชิกสำเร็จ กรุณาเข้าสู่ระบบ')
       } catch (e) {
         alert('สมัครสมาชิกไม่สำเร็จ')
@@ -138,13 +148,6 @@ const handleSubmit = async () => {
 .btn {
   display: inline-block;
   width: 100%;
-  padding: 0.75rem 1.25rem;
-  border-radius: 0.75rem;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  border: none;
-  transition: background-color 0.15s ease-in-out;
 }
 
 .form-toggle {

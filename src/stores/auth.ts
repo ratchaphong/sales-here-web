@@ -26,6 +26,13 @@ export interface UserProfile {
   role: 'USER' | 'ADMIN' | 'STAFF'
 }
 
+export interface UpdateProfilePayload {
+  name: string
+  phoneNumber: string
+  address: string
+  avatar?: string
+}
+
 const API_BASE = 'https://user-m-service.onrender.com/users'
 
 export const useAuthStore = defineStore('auth', {
@@ -63,12 +70,7 @@ export const useAuthStore = defineStore('auth', {
     async fetchProfile() {
       const token = getAccessToken()
       if (!token) return
-      await axios.get('/profile', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-
+      this.loading = true
       try {
         const res = await axios.get<UserProfile>(`${API_BASE}/profile`, {
           headers: {
@@ -79,6 +81,29 @@ export const useAuthStore = defineStore('auth', {
       } catch (err) {
         console.error('❌ Failed to fetch profile:', err)
         throw err
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async updateProfile(payload: UpdateProfilePayload) {
+      const token = getAccessToken()
+      if (!token) return
+      this.loading = true
+      try {
+        const res = await axios.patch(`${API_BASE}/profile`, payload, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+
+        this.profile = res.data
+        return true
+      } catch (err) {
+        console.error('❌ Failed to update profile:', err)
+        throw err
+      } finally {
+        this.loading = false
       }
     },
 

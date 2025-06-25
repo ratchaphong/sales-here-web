@@ -18,6 +18,7 @@ import SalesHereLogo from './SalesHereLogo.vue'
 
 const auth = useAuthStore()
 const isLoggedIn = computed(() => !!auth.profile)
+// คำนวณค่าไว้ใช้งานใน template หรือ logic
 
 const logout = () => {
   auth.logout()
@@ -41,14 +42,14 @@ const logout = () => {
   padding: 0 1.5rem;
 }
 
-.logo {
+.navbar .logo {
   color: unset;
   text-decoration: unset;
   font-weight: unset;
   transition: unset;
 }
 
-nav {
+.navbar nav {
   display: flex;
   gap: 1.5rem;
 }
