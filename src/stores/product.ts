@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { fetchProducts as fetchProductsService } from '@/services/product'
+import { fetchProductById, fetchProducts as fetchProductsService } from '@/services/product'
 
 export interface Product {
   id: string
@@ -24,6 +24,7 @@ export const useProductStore = defineStore('product', {
   state: () => ({
     loading: false,
     products: [] as Product[],
+    product: null as Product | null,
   }),
   actions: {
     async fetchProducts(query: ProductQuery) {
@@ -33,6 +34,18 @@ export const useProductStore = defineStore('product', {
         this.products = products
       } catch (err) {
         console.error('❌ Failed to fetch products:', err)
+      } finally {
+        this.loading = false
+      }
+    },
+    async fetchProductById(productId: string) {
+      this.loading = true
+      try {
+        const product = await fetchProductById(productId)
+        this.product = product
+      } catch (err) {
+        console.error(`❌ Failed to fetch product ${productId}:`, err)
+        return null
       } finally {
         this.loading = false
       }

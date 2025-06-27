@@ -1,8 +1,8 @@
 <template>
   <div class="sso-wrapper">
+    <LoadingOverlay v-if="auth.loading" />
     <p>กำลังเข้าสู่ระบบผ่าน SSO</p>
   </div>
-  <LoadingOverlay v-if="auth.loading" />
 </template>
 
 <script setup lang="ts">

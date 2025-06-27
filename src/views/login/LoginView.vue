@@ -1,5 +1,6 @@
 <template>
   <div class="form-wrapper">
+    <LoadingOverlay v-if="auth.loading" />
     <div class="form-container">
       <SalesHereLogo size="lg" />
       <h1 class="form-title">
@@ -39,7 +40,6 @@
         </a>
       </p>
     </div>
-    <LoadingOverlay v-if="auth.loading" />
   </div>
 </template>
 

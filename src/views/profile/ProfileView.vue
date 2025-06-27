@@ -1,6 +1,7 @@
 <template>
   <div class="profile-page">
     <Navbar />
+    <LoadingOverlay v-if="auth.loading" />
 
     <div class="container">
       <div class="profile-card" v-if="auth.profile">
@@ -60,8 +61,6 @@
         <p>ไม่พบข้อมูลผู้ใช้</p>
       </div>
     </div>
-
-    <LoadingOverlay v-if="auth.loading" />
   </div>
 </template>
 

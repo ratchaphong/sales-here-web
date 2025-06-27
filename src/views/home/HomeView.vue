@@ -1,6 +1,7 @@
 <template>
   <div class="home-page">
     <Navbar />
+    <LoadingOverlay v-if="productStore.loading" />
 
     <div id="product-scroll" class="product-scroll">
       <div
@@ -8,6 +9,7 @@
         :key="product.id"
         class="product-section"
         :style="{ backgroundImage: `url(${product.image})` }"
+        @click="goToProduct(product.id)"
       >
         <div class="product-info">
           <h2>{{ product.name }}</h2>
@@ -25,7 +27,6 @@
       @update:sort-mode="(val) => (sortBy = val)"
       @search="handleSearch"
     />
-    <LoadingOverlay v-if="productStore.loading" />
   </div>
 </template>
 
@@ -36,9 +37,12 @@ import { useAuthStore } from '@/stores/auth'
 import Navbar from '@/components/Navbar.vue'
 import LoadingOverlay from '@/components/LoadingOverlay.vue'
 import BottomSearchBar from './BottomSearchBar.vue'
+import { useRouter } from 'vue-router'
 
 const productStore = useProductStore()
 const auth = useAuthStore()
+const router = useRouter()
+
 const searchText = ref('')
 const sortBy = ref('')
 const showSearch = ref(false)
@@ -65,6 +69,10 @@ const handleSearch = async () => {
   } finally {
     toggleSearch()
   }
+}
+
+function goToProduct(id: string) {
+  router.push(`/product/${id}`)
 }
 
 onMounted(async () => {
@@ -105,6 +113,7 @@ onMounted(async () => {
   align-items: end;
   padding: 2rem;
   box-sizing: border-box;
+  cursor: pointer;
 }
 
 .product-info {

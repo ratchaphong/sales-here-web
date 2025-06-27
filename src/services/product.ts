@@ -9,3 +9,8 @@ export async function fetchProducts(query: ProductQuery): Promise<Product[]> {
   })
   return res.data
 }
+
+export async function fetchProductById(productId: string): Promise<Product> {
+  const res = await api.get<Product>(API_BASE + `/${productId}`)
+  return res.data
+}
