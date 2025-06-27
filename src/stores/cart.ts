@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { fetchCart, addToCart, deleteCartItem } from '@/services/cart'
+import { fetchCart, addToCart, deleteCartItem, fetchOrders } from '@/services/cart'
 
 export interface CartItem {
   id: string
@@ -11,6 +11,15 @@ export interface CartItem {
   isDeleted: boolean
 }
 
+export interface OrderItem {
+  id: string
+  userId: string
+  productId: string
+  totalPrice: number
+  createdAt: string
+  status: string
+}
+
 export interface CreateCartPayload {
   productId: string
   quantity: number
@@ -20,6 +29,7 @@ export const useCartStore = defineStore('cart', {
   state: () => ({
     loading: false,
     items: [] as CartItem[],
+    orders: [] as OrderItem[],
   }),
   actions: {
     async fetchCart() {
@@ -55,6 +65,19 @@ export const useCartStore = defineStore('cart', {
         this.items = this.items.filter((item) => item.id !== id)
       } catch (err) {
         console.error('❌ Failed to delete cart item:', err)
+        throw err
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async fetchOrders() {
+      this.loading = true
+      try {
+        const orders = await fetchOrders()
+        this.orders = orders
+      } catch (err) {
+        console.error('❌ Failed to fetch orders:', err)
         throw err
       } finally {
         this.loading = false

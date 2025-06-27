@@ -5,6 +5,7 @@
       <router-link v-if="!isLoggedIn" to="/login">เข้าสู่ระบบ</router-link>
       <template v-else>
         <router-link to="/profile">โปรไฟล์</router-link>
+        <router-link to="/history">ประวัติรายการ</router-link>
         <a @click.prevent="logout" href="#">ออกจากระบบ</a>
       </template>
     </nav>
