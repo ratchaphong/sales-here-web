@@ -76,6 +76,7 @@ const handleSubmit = async () => {
           email: form.email,
           password: form.password,
         })
+        await auth.fetchProfile()
         router.push('/home')
       } catch (e) {
         alert('เข้าสู่ระบบไม่สำเร็จ')

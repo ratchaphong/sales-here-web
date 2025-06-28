@@ -5,6 +5,7 @@ import {
   register as registerService,
   fetchProfile as fetchProfileService,
   updateProfile as updateProfileService,
+  logout as logoutService,
 } from '@/services/user'
 
 export interface LoginPayload {
@@ -100,9 +101,18 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    logout() {
-      this.profile = null
-      removeAccessToken()
+    async logout() {
+      this.loading = true
+      try {
+        await logoutService()
+        this.profile = null
+        removeAccessToken()
+      } catch (err) {
+        console.error('❌ Logout failed:', err)
+        throw err
+      } finally {
+        this.loading = false
+      }
     },
   },
 })

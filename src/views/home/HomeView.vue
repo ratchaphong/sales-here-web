@@ -76,14 +76,14 @@ function goToProduct(id: string) {
 }
 
 onMounted(async () => {
-  if (!auth.profile) {
-    try {
-      await auth.fetchProfile()
-    } catch (err) {
-      console.warn('⚠️ ไม่สามารถโหลดข้อมูลผู้ใช้ได้:', err)
-      // หากจำเป็นอาจ redirect ไป login ได้ที่นี่
-    }
-  }
+  // if (!auth.profile) {
+  //   try {
+  //     await auth.fetchProfile()
+  //   } catch (err) {
+  //     console.warn('⚠️ ไม่สามารถโหลดข้อมูลผู้ใช้ได้:', err)
+  //     // หากจำเป็นอาจ redirect ไป login ได้ที่นี่
+  //   }
+  // }
 
   if (productStore.products.length === 0) {
     await productStore.fetchProducts(query)
